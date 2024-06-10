@@ -6,13 +6,12 @@ import com.ms.grademaster.comons.service.IGenerarRecursos;
 import com.ms.grademaster.comons.utils.constants.Constantes;
 import com.ms.grademaster.comons.utils.enums.EstadoRespuestaEnum;
 import com.ms.grademaster.comons.utils.enums.TipoUsuarioEnum;
+import com.ms.grademaster.estudiante.dto.AsignarMateriasDto;
+import com.ms.grademaster.estudiante.service.IConsultaEstudianteService;
 import com.ms.grademaster.estudiante.service.ICrearEstudianteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("")
@@ -21,7 +20,33 @@ public class EstudianteController {
 
     private final ICrearEstudianteService crearEstudianteService;
 
+    private final IConsultaEstudianteService iConsultaEstudianteService;
+
     private final IGenerarRecursos iGenerarRecursos;
+
+    @GetMapping("all-estudiantes-activos")
+    public ResponseEntity<RespuestaGeneralDto> getAllEstudiantes(){
+        RespuestaGeneralDto respuestaGeneral =  new RespuestaGeneralDto();
+        respuestaGeneral.setData(iConsultaEstudianteService.consultarAllEstudiantes());
+        respuestaGeneral.setEstado(EstadoRespuestaEnum.OK);
+        return ResponseEntity.ok(respuestaGeneral);
+    }
+
+    @GetMapping("all-materias-estudiante-carrera")
+    public ResponseEntity<RespuestaGeneralDto> getAllMateriasEstudianteCarrera(@RequestParam String codigoCarrera, @RequestParam String codigoEstudiante){
+        RespuestaGeneralDto respuestaGeneral =  new RespuestaGeneralDto();
+        respuestaGeneral.setData(iConsultaEstudianteService.buscarMateriasPorCarrera(codigoCarrera, codigoEstudiante));
+        respuestaGeneral.setEstado(EstadoRespuestaEnum.OK);
+        return ResponseEntity.ok(respuestaGeneral);
+    }
+
+    @GetMapping("all-estudiantes-activos-nombre")
+    public ResponseEntity<RespuestaGeneralDto> getAllEstudiantesActivos(@RequestParam String nombre){
+        RespuestaGeneralDto respuestaGeneral =  new RespuestaGeneralDto();
+        respuestaGeneral.setData(iConsultaEstudianteService.consultarAllEstudiantesNombre(nombre));
+        respuestaGeneral.setEstado(EstadoRespuestaEnum.OK);
+        return ResponseEntity.ok(respuestaGeneral);
+    }
 
     @PostMapping("crear")
     public ResponseEntity<RespuestaGeneralDto> crearEstudiante(@RequestBody EstudianteDto estudianteDto){
@@ -44,6 +69,15 @@ public class EstudianteController {
     public ResponseEntity<RespuestaGeneralDto> generarCorreo(@RequestBody EstudianteDto estudianteDto){
         RespuestaGeneralDto respuestaGeneral =  new RespuestaGeneralDto();
         respuestaGeneral.setData(iGenerarRecursos.generarCorreo(estudianteDto, TipoUsuarioEnum.ESTUDIANTE));
+        respuestaGeneral.setEstado(EstadoRespuestaEnum.OK);
+        return ResponseEntity.ok(respuestaGeneral);
+    }
+
+    @PostMapping("asignar-materias")
+    public ResponseEntity<RespuestaGeneralDto> asignarMateriasDocente(@RequestBody AsignarMateriasDto asignarMaterias){
+        RespuestaGeneralDto respuestaGeneral =  new RespuestaGeneralDto();
+        crearEstudianteService.asignarMateriasDocente(asignarMaterias);
+        respuestaGeneral.setData(true);
         respuestaGeneral.setEstado(EstadoRespuestaEnum.OK);
         return ResponseEntity.ok(respuestaGeneral);
     }
