@@ -2,6 +2,7 @@ package com.ms.grademaster.estudiante.service.impl;
 
 import com.ms.grademaster.comons.dto.EstudianteDto;
 import com.ms.grademaster.comons.dto.MateriaDto;
+import com.ms.grademaster.comons.dto.MateriasHorasDto;
 import com.ms.grademaster.comons.mapper.CarreraMateriaMapper;
 import com.ms.grademaster.comons.mapper.EstudianteMapper;
 import com.ms.grademaster.comons.mapper.MateriaMapper;
@@ -50,5 +51,10 @@ public class ConsultaEstudianteService implements IConsultaEstudianteService {
         materiasEstudianteDto.setMateriasAsignadas(materiasEstudiante);
         materiasEstudianteDto.setMateriasNoAsignadas(materiasCarrera.stream().filter(materia -> materiasEstudiante.stream().noneMatch(materiaAsig -> materiaAsig.getCodigo().equals(materia.getCodigo()))).collect(Collectors.toList()));
         return materiasEstudianteDto;
+    }
+
+    @Override
+    public List<MateriasHorasDto> materiasEstudiante(String codigoEstudiante) {
+        return materiaMapper.listObjectToListMateriasHorasDto(estudianteMateriaRepository.buscarMateriasHorariosEstudiante(codigoEstudiante));
     }
 }

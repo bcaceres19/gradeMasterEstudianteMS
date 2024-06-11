@@ -82,4 +82,11 @@ public class EstudianteController {
         return ResponseEntity.ok(respuestaGeneral);
     }
 
+    @GetMapping("materias-estudiante")
+    public ResponseEntity<RespuestaGeneralDto> getMateriasEstudiatne(@RequestParam String codigoEstudiante){
+        RespuestaGeneralDto respuestaGeneral =  new RespuestaGeneralDto();
+        respuestaGeneral.setData(iConsultaEstudianteService.materiasEstudiante(codigoEstudiante));
+        respuestaGeneral.setEstado(EstadoRespuestaEnum.OK);
+        return ResponseEntity.ok(respuestaGeneral);
+    }
 }

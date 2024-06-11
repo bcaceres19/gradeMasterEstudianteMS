@@ -13,12 +13,22 @@ import java.util.List;
 public interface EstudianteMateriaRepository extends JpaRepository<EstudianteMateriaEntity, EstudianteMateriaId> {
 
     @Query(value = """
-    select m.codigo, m.nombre  from dbo.estudiante_materia em inner join dbo.materia m on em.codigo_materia_fk = m.codigo
+    select m.codigo, m.nombre  from dbo.estudiante_materia em 
+        inner join dbo.materia m on em.codigo_materia_fk = m.codigo
     inner join dbo.estado e on m.estado_fk = e.id_estado
     where em.codigo_estudiante_fk = :codigoEstudiante and e.nombre = 'ACTIVO'
     """, nativeQuery = true)
     List<Object[]> buscarMateriasEstudiante(@Param("codigoEstudiante") String codigoEstudiante);
 
     void deleteByCodigoMateriaEntityFk_Codigo(String codigoMateria);
+
+    @Query(value = """
+    select m.codigo, m.nombre, m.ncreditos ,mh.hora_inicio, mh.hora_final  from dbo.estudiante_materia em
+    inner join dbo.materia m on em.codigo_materia_fk = m.codigo
+    inner join dbo.materia_horario mh on mh.codigo_materia_fk = m.codigo
+    inner join dbo.estado e on m.estado_fk = e.id_estado
+    where em.codigo_estudiante_fk = :codigoEstudiante and e.nombre = 'ACTIVO'
+    """, nativeQuery = true)
+    List<Object[]> buscarMateriasHorariosEstudiante(@Param("codigoEstudiante") String codigoEstudiante);
 
 }
